@@ -1,27 +1,69 @@
-import { Link, Text } from "@chakra-ui/react";
+import { FC } from "react";
+import {
+  Link,
+  Text,
+  Card,
+  CardHeader,
+  CardBody,
+  CardFooter,
+  Image,
+  Flex,
+  Box,
+} from "@chakra-ui/react";
+import { FaFire, FaWater, FaLeaf } from "react-icons/fa";
+
+// Define um tipo para os tipos de Pokémon
+type PokemonType = "fire" | "water" | "grass";
+
+const typeIcons: Record<PokemonType, JSX.Element> = {
+  fire: <FaFire />,
+  water: <FaWater />,
+  grass: <FaLeaf />,
+};
 
 interface PokemonCardProps {
-  //   id: number;
   name: string;
-  //   height: number;
-  //   weight: number;
-  //   sprites: {
-  //     front_default: string;
-  //   };
+  image: string;
+  types: PokemonType[];
+  url: string;
 }
 
-export function PokemonCard({ name }: PokemonCardProps) {
+export const PokemonCard: FC<PokemonCardProps> = ({
+  name,
+  types,
+  url,
+  image,
+}) => {
   return (
-    <Link href={name} border="transparent" flexDirection="column">
-      <Text
-        as="h2"
-        fontSize="2xl"
-        fontWeight="semibold"
-        textAlign="center"
-        m="3"
-      >
-        {name}
-      </Text>
-    </Link>
+    <Card border="1px" borderColor="gray.200" borderRadius="md" boxShadow="md">
+      <CardHeader textAlign="center">
+        <Text fontWeight="bold" textTransform="capitalize">
+          {name}
+        </Text>
+      </CardHeader>
+      <CardBody>
+        <Image
+          src={image}
+          alt={name}
+          boxSize="150px"
+          objectFit="cover"
+          mx="auto"
+          transition="transform 0.3s ease"
+          _hover={{ transform: "scale(1.2)" }}
+        />
+        <Flex mt={3} justify="center" wrap="wrap">
+          {types.map((type) => (
+            <Box key={type} mx={1} color="gray.500">
+              {typeIcons[type] || <Text as="span">{type}</Text>}
+            </Box>
+          ))}
+        </Flex>
+      </CardBody>
+      <CardFooter>
+        <Link href={url} color="gray.500" textAlign="center" w="100%">
+          Ver detalhes
+        </Link>
+      </CardFooter>
+    </Card>
   );
-}
+};
