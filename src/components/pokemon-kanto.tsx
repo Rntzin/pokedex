@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { Flex, SimpleGrid } from "@chakra-ui/react";
+import { Flex, SimpleGrid, Text } from "@chakra-ui/react";
 import { GetServerSideProps } from "next";
 import { PokemonCard } from "./pokemon-card";
 import { getPokemonList } from "@/lib/pokemonAPI";
@@ -15,24 +15,46 @@ export function PokemonKanto({ pokemonList }: PokemonGridProps) {
     <>
       <Flex
         as="div"
-        display="flex"
-        textAlign="center"
-        textDecoration="none"
+        gap="10"
+        w="100%"
+        justify="space-between"
+        alignItems="center"
+        minH="screen"
+        fontFamily="monospace"
         flexDirection="column"
       >
-        <SimpleGrid columns={[1, 2, 3]} spacing={6}>
-          {pokemonList.results.map((pokemon: any) => {
-            return (
-              <PokemonCard
-                key={pokemon.name}
-                name={pokemon.name}
-                url={pokemon.url}
-                image={pokemon.image}
-                types={[pokemon.types]}
-              />
-            );
-          })}
-        </SimpleGrid>
+        <Text
+          as="h1"
+          fontSize="4xl"
+          fontWeight="semibold"
+          textAlign="center"
+          mt="10"
+          fontFamily="mono"
+          color="gray.500"
+        >
+          Coleção de Pokemon
+        </Text>
+        <Flex
+          as="div"
+          display="flex"
+          textAlign="center"
+          textDecoration="none"
+          flexDirection="column"
+        >
+          <SimpleGrid columns={[1, 2, 3]} spacing={6}>
+            {pokemonList.results.map((pokemon: any) => {
+              return (
+                <PokemonCard
+                  key={pokemon.name}
+                  name={pokemon.name}
+                  url={pokemon.url}
+                  image={pokemon.image}
+                  types={[pokemon.types]}
+                />
+              );
+            })}
+          </SimpleGrid>
+        </Flex>
       </Flex>
     </>
   );

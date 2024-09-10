@@ -28,10 +28,11 @@ import {
   FaMoon,
   FaShieldAlt,
   FaMagic,
+  FaStar,
 } from "react-icons/fa";
 
 const typeIcons: Record<string, JSX.Element> = {
-  normal: <FaFeather />,
+  normal: <FaStar />,
   fire: <FaFire />,
   water: <FaWater />,
   grass: <FaLeaf />,
@@ -51,6 +52,27 @@ const typeIcons: Record<string, JSX.Element> = {
   fairy: <FaMagic />,
 };
 
+const typeColors: Record<string, string> = {
+  normal: "gray.500",
+  fire: "red.500",
+  water: "blue.500",
+  grass: "green.500",
+  electric: "yellow.500",
+  ice: "cyan.500",
+  fighting: "orange.500",
+  poison: "purple.500",
+  ground: "brown.500",
+  flying: "blue.300",
+  psychic: "pink.500",
+  bug: "lime.500",
+  rock: "gray.600",
+  ghost: "purple.600",
+  dragon: "indigo.500",
+  dark: "black",
+  steel: "silver",
+  fairy: "pink.300",
+};
+
 interface PokemonCardProps {
   name: string;
   image: string;
@@ -65,7 +87,6 @@ export const PokemonCard: FC<PokemonCardProps> = ({
   image,
 }) => {
   console.log(types);
-
   return (
     <Card border="1px" borderColor="gray.200" borderRadius="md" boxShadow="md">
       <CardHeader textAlign="center">
@@ -85,21 +106,19 @@ export const PokemonCard: FC<PokemonCardProps> = ({
         />
       </CardBody>
       <Flex mt={3} justify="center" wrap="wrap">
-        {types.map((type) => (
-          <Box key={type} mx={2} color="gray.500">
-            {typeIcons[type] || typeIcons[type[0 && 1]]}
-          </Box>
-        ))}
+        {types[0].map((type, index) => {
+          const normalizedType = type;
+          const icon = typeIcons[normalizedType];
+          const color = typeColors[normalizedType] || "gray.500";
+          return (
+            <Box key={index} mx={1} color={color}>
+              {icon}
+            </Box>
+          );
+        })}
       </Flex>
       <CardFooter>
-        <Link
-          href={url}
-          color="blue.500"
-          textAlign="center"
-          w="100%"
-          mt={2}
-          display="block"
-        >
+        <Link href={url} color="blue.500" textAlign="center" w="100%" mt={2}>
           Ver detalhes
         </Link>
       </CardFooter>
