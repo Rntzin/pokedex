@@ -20,7 +20,7 @@ export function PokemonKanto({ pokemonList }: PokemonGridProps) {
         textDecoration="none"
         flexDirection="column"
       >
-        <SimpleGrid columns={[1, 2, 3]} spacing={4}>
+        <SimpleGrid columns={[1, 2, 3]} spacing={6}>
           {pokemonList.results.map((pokemon: any) => {
             return (
               <PokemonCard

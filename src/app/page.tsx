@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/alt-text */
 
 import { PokemonKanto } from "@/components/pokemon-kanto";
-import { Flex, Link, Text } from "@chakra-ui/react";
+import { Flex, Text } from "@chakra-ui/react";
 import { getPokemonList } from "@/lib/pokemonAPI";
 import { FilterPokemon } from "@/components/filter";
 
