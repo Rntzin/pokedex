@@ -45,6 +45,7 @@ export function PokemonKanto({ pokemonList }: PokemonGridProps) {
             {pokemonList.results.map((pokemon: any) => {
               return (
                 <PokemonCard
+                  id={pokemon.id}
                   key={pokemon.name}
                   name={pokemon.name}
                   url={pokemon.url}

@@ -7,6 +7,7 @@ export async function getPokemonList(limit: number = 151) {
       const detailRes = await fetch(pokemon.url);
       const detailData = await detailRes.json();
       return {
+        id: detailData.id,
         name: detailData.name,
         image: detailData.sprites.front_default,
         url: pokemon.url,

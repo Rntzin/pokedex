@@ -61,13 +61,13 @@ const typeColors: Record<string, string> = {
   ice: "cyan.500",
   fighting: "orange.500",
   poison: "purple.500",
-  ground: "brown.500",
+  ground: "#D97845",
   flying: "blue.300",
   psychic: "pink.500",
-  bug: "lime.500",
+  bug: "#91C12F",
   rock: "gray.600",
   ghost: "purple.600",
-  dragon: "indigo.500",
+  dragon: "#0B6DC3",
   dark: "black",
   steel: "silver",
   fairy: "pink.300",
@@ -78,19 +78,41 @@ interface PokemonCardProps {
   image: string;
   types: string[];
   url: string;
+  id: number;
 }
 
 export const PokemonCard: FC<PokemonCardProps> = ({
   name,
   types,
   url,
+  id,
   image,
 }) => {
-  console.log(types);
+  const formattedId = `N°${id.toString().padStart(3, "0")}`;
   return (
-    <Card border="1px" borderColor="gray.200" borderRadius="md" boxShadow="md">
-      <CardHeader textAlign="center">
-        <Text fontWeight="bold" textTransform="capitalize">
+    <Card
+      border="1px"
+      borderColor="gray.200"
+      borderRadius="md"
+      boxShadow="md"
+      maxW="360px"
+    >
+      <CardHeader fontSize="sm" textAlign="center">
+        <Text
+          as="h2"
+          fontWeight="semibold"
+          textTransform="capitalize"
+          color="gray.600"
+        >
+          {formattedId}
+        </Text>
+        <Text
+          as="h1"
+          fontSize="xl"
+          fontWeight="semibold"
+          textTransform="capitalize"
+          color="gray.700"
+        >
           {name}
         </Text>
       </CardHeader>
@@ -110,16 +132,52 @@ export const PokemonCard: FC<PokemonCardProps> = ({
           const normalizedType = type;
           const icon = typeIcons[normalizedType];
           const color = typeColors[normalizedType] || "gray.500";
+
           return (
-            <Box key={index} mx={1} color={color}>
-              {icon}
+            <Box
+              key={index}
+              mx={2}
+              bgColor={color}
+              p={2}
+              flex="1"
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              maxW="150px"
+              gap="2"
+              borderRadius="90px"
+            >
+              <Box
+                bgColor="white"
+                border="white"
+                borderRadius="50%"
+                p="3px"
+                color={color}
+              >
+                {icon}
+              </Box>
+              <Box color="white">{type}</Box>
             </Box>
           );
         })}
       </Flex>
       <CardFooter>
-        <Link href={url} color="blue.500" textAlign="center" w="100%" mt={2}>
-          Ver detalhes
+        <Link
+          href={name}
+          color="white"
+          textAlign="center"
+          w="100%"
+          bgColor="gray.500"
+          mx={4}
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          borderRadius="50px"
+          p="2"
+          fontWeight="semibold"
+          textDecoration="none"
+        >
+          Ver Detalhes
         </Link>
       </CardFooter>
     </Card>
