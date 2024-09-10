@@ -53,7 +53,7 @@ const typeIcons: Record<string, JSX.Element> = {
 };
 
 const typeColors: Record<string, string> = {
-  normal: "gray.500",
+  normal: "#919AA2",
   fire: "red.500",
   water: "blue.500",
   grass: "green.500",
@@ -89,6 +89,10 @@ export const PokemonCard: FC<PokemonCardProps> = ({
   image,
 }) => {
   const formattedId = `N°${id.toString().padStart(3, "0")}`;
+
+  const [type1] = types[0];
+  const icon2 = typeIcons[type1];
+  const backgroundColor = typeColors[type1] || "black";
   return (
     <Card
       border="1px"
@@ -116,7 +120,8 @@ export const PokemonCard: FC<PokemonCardProps> = ({
           {name}
         </Text>
       </CardHeader>
-      <CardBody>
+
+      <CardBody position="relative" as="a" href={name} cursor="default">
         <Image
           src={image}
           alt={name}
@@ -125,8 +130,27 @@ export const PokemonCard: FC<PokemonCardProps> = ({
           mx="auto"
           _hover={{ transform: "scale(1.1)" }}
           transition="transform 0.2s"
+          cursor="pointer"
+        />
+        <Box
+          position="absolute"
+          top="50%"
+          left="50%"
+          width="60%"
+          height="60%"
+          zIndex={1}
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          pointerEvents="none"
+          opacity="0.1"
+          transform="translate(-50%, -50%)"
+          borderRadius="50%"
+          bg={backgroundColor}
+          p={50}
         />
       </CardBody>
+
       <Flex mt={3} justify="center" wrap="wrap">
         {types[0].map((type, index) => {
           const normalizedType = type;
@@ -161,6 +185,7 @@ export const PokemonCard: FC<PokemonCardProps> = ({
           );
         })}
       </Flex>
+
       <CardFooter>
         <Link
           href={name}
