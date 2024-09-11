@@ -1,53 +1,20 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { Flex, SimpleGrid, Text } from "@chakra-ui/react";
 import { GetServerSideProps } from "next";
-import { PokemonCard } from "./pokemon-card";
-import { getPokemonList, PokemonDetail } from "@/lib/pokemonAPI";
+import { getPokemonList, Pokemon } from "@/lib/pokemonAPI";
 import { FilterPokemon } from "./filter";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 interface PokemonKantoProps {
-  pokemonDetails: PokemonDetail[];
+  pokemonDetails: Pokemon[];
 }
 
 export function PokemonKanto({ pokemonDetails }: PokemonKantoProps) {
-  const [pokemons, setPokemons] = useState<PokemonDetail[]>(pokemonDetails);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [offset, setOffset] = useState<number>(0);
-
+  const [data, setData] = useState<Pokemon[]>(pokemonDetails);
   useEffect(() => {
-    const loadMorePokemons = async () => {
-      if (loading) return;
-
-      setLoading(true);
-      const limit = 10;
-      const { results } = await getPokemonList(limit, offset);
-      setPokemons((prev) => [...prev, ...results]);
-      setLoading(false);
-    };
-
-    const handleScroll = () => {
-      if (
-        window.innerHeight + document.documentElement.scrollTop !==
-          document.documentElement.offsetHeight ||
-        loading
-      ) {
-        return;
-      }
-      setOffset((prev) => prev + 10); // Incrementa o offset para carregar mais dados
-    };
-
-    window.addEventListener("scroll", handleScroll);
-
-    // Carrega mais Pokémon quando o componente é montado
-    loadMorePokemons();
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, [loading, offset]);
+    setData(pokemonDetails || []);
+  }, [pokemonDetails]);
   return (
     <>
       <Flex
@@ -79,20 +46,21 @@ export function PokemonKanto({ pokemonDetails }: PokemonKantoProps) {
           flexDirection="column"
         >
           <SimpleGrid columns={[1, 2, 3]} spacing={6}>
-            {pokemonDetails.map((pokemon: any) => {
+            {data.map((pokemon) => {
               return (
-                <PokemonCard
-                  id={pokemon.id}
-                  key={pokemon.name}
-                  name={pokemon.name}
-                  url={pokemon.url}
-                  image={pokemon.image}
-                  types={[pokemon.types]}
-                  height={pokemon.height}
-                  weight={pokemon.weight}
-                  weaknesses={pokemon.weaknesses}
-                  moves={pokemon.moves}
-                />
+                <h1 key={pokemon.id}>{pokemon.name}</h1>
+                // <PokemonCard
+                //   id={pokemon.id}
+                //   key={pokemon.name}
+                //   name={pokemon.name}
+                //   url={pokemon.url}
+                //   image={pokemon.image}
+                //   types={[pokemon.types]}
+                //   height={pokemon.height}
+                //   weight={pokemon.weight}
+                //   weaknesses={pokemon.weaknesses}
+                //   moves={pokemon.moves}
+                // />
               );
             })}
           </SimpleGrid>
@@ -103,8 +71,14 @@ export function PokemonKanto({ pokemonDetails }: PokemonKantoProps) {
 }
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const pokemonDetails = await getPokemonList();
-  return {
-    props: { pokemonDetails },
-  };
+  try {
+    const pokemonDetails = await getPokemonList();
+    return {
+      props: { pokemonDetails },
+    };
+  } catch (error) {
+    return {
+      props: { pokemonDetails: [] },
+    };
+  }
 };

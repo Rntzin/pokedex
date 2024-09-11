@@ -1,56 +1,113 @@
 import axios from "axios";
 
-export interface PokemonDetail {
-  id: number;
+export interface Pokemon {
+  id: string;
+  number: string;
   name: string;
-  image: string;
-  url: string;
-  types: string[][];
-  weight: number;
-  height: number;
-  moves: string[];
+  weight: {
+    minimum: string;
+    maximum: string;
+  };
+  height: {
+    minimum: string;
+    maximum: string;
+  };
+  classification: string;
+  types: string[];
+  resistant: string[];
   weaknesses: string[];
+  fleeRate: number;
+  maxCP: number;
+  maxHP: number;
+  attacks: {
+    fast: Attack[];
+    special: Attack[];
+  };
+  evolutions?: Evolution[];
+  evolutionRequirements?: EvolutionRequirement;
+  image: string;
+}
+
+export interface Attack {
+  name: string;
+  type: string;
+  damage: number;
+}
+
+export interface Evolution {
+  id: string;
+  name: string;
+}
+
+export interface EvolutionRequirement {
+  amount: number;
+  name: string;
 }
 
 export const getPokemonList = async (
   limit: number = 10,
   offset: number = 0
-): Promise<{ results: PokemonDetail[] }> => {
-  const { data } = await axios.get(
-    `https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`
-  );
-
-  const pokemonDetails: PokemonDetail[] = [];
-  for (const pokemon of data.results) {
-    const { data: detailData } = await axios.get(pokemon.url);
-
-    const types = detailData.types.map(
-      (type: { type: { name: string } }) => type.type.name
-    );
-    const weaknesses: string[] = [];
-
-    for (const type of detailData.types) {
-      const { data: typeData } = await axios.get(type.type.url);
-      const typeWeaknesses = typeData.damage_relations.double_damage_from.map(
-        (weakness: { name: string }) => weakness.name
-      );
-      weaknesses.push(...typeWeaknesses);
+): Promise<Pokemon[]> => {
+  const query = `
+ {
+  pokemons(first: 10) {
+    id            
+    number        
+    name          
+    weight {
+      minimum     
+      maximum     
     }
-
-    pokemonDetails.push({
-      id: detailData.id,
-      name: detailData.name,
-      image: detailData.sprites.front_default,
-      url: pokemon.url,
-      types,
-      weight: detailData.weight,
-      height: detailData.height,
-      moves: detailData.moves.map(
-        (move: { move: { name: string } }) => move.move.name
-      ),
-      weaknesses,
-    });
+    height {
+      minimum     
+      maximum     
+    }
+    classification 
+    types         
+    resistant     
+    weaknesses    
+    fleeRate      
+    maxCP         
+    maxHP         
+    attacks {
+      fast {      
+        name
+        type
+        damage
+      }
+      special {   
+        name
+        type
+        damage
+      }
+    }
+    evolutions {  
+      id
+      name
+    }
+    evolutionRequirements { 
+      amount
+      name
+    }
+    image         
   }
+}
+;
+`;
+  try {
+    const response = await axios({
+      url: "https://graphql-pokemon2.vercel.app/",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: JSON.stringify({
+        query,
+      }),
+    });
 
-  return { results: pokemonDetails };
+    return response.data.data.pokemons;
+  } catch (error) {
+    throw error;
+  }
 };
