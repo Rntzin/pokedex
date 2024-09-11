@@ -4,7 +4,7 @@
 
 ## :rocket: Sobre o projeto
 
-Este é um site que funciona como uma pokédex, ele exibe as seguintes informações sobre 151 Pokémons diferentes:
+Este é um site que funciona como uma pokédex, ele da início na região de Kanto e finaliza na região de Sinnoh, ele exibe as seguintes informações sobre 493 Pokémons diferentes:
 
 - Imagem
 - Nome
