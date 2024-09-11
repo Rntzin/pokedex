@@ -1,7 +1,8 @@
 "use client";
 
-import { Flex, Input, Text } from "@chakra-ui/react";
+import { Flex, Input, InputGroup, InputLeftElement } from "@chakra-ui/react";
 import { useRef } from "react";
+import { CiSearch } from "react-icons/ci";
 
 export function FilterPokemon() {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -21,29 +22,29 @@ export function FilterPokemon() {
       align="center"
       gap={2}
     >
-      <Text
-        as="h3"
-        fontSize="medium"
-        fontWeight="bold"
-        textAlign="center"
-        onClick={handleTextClick}
-        cursor="default"
-        color="gray.100"
-      >
-        Digite aqui:
-      </Text>
       <Flex as="form" alignItems="center" gap="1.5">
-        <Input
-          type="text"
-          color="white"
-          placeholder="Região Kanto"
-          sx={{
-            "::placeholder": {
-              color: "gray.100",
-            },
-          }}
-          ref={inputRef}
-        />
+        <InputGroup>
+          <InputLeftElement color="gray.900">
+            <CiSearch size="25px" onClick={handleTextClick} cursor="pointer" />
+          </InputLeftElement>
+          <Input
+            type="text"
+            color="gray.900"
+            placeholder="Procurar Pokemon..."
+            borderColor="gray.400"
+            borderRadius="40px"
+            sx={{
+              "::placeholder": {
+                color: "gray.400",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: "sm",
+              },
+            }}
+            ref={inputRef}
+            pl="10"
+          />
+        </InputGroup>
       </Flex>
     </Flex>
   );

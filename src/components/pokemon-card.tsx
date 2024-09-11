@@ -1,6 +1,5 @@
 import { FC } from "react";
 import {
-  Link,
   Text,
   Card,
   CardHeader,
@@ -9,6 +8,15 @@ import {
   Image,
   Flex,
   Box,
+  Button,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  useDisclosure,
 } from "@chakra-ui/react";
 import {
   FaFire,
@@ -31,7 +39,7 @@ import {
   FaStar,
 } from "react-icons/fa";
 
-const typeIcons: Record<string, JSX.Element> = {
+export const typeIcons: Record<string, JSX.Element> = {
   normal: <FaStar />,
   fire: <FaFire />,
   water: <FaWater />,
@@ -52,7 +60,7 @@ const typeIcons: Record<string, JSX.Element> = {
   fairy: <FaMagic />,
 };
 
-const typeColors: Record<string, string> = {
+export const typeColors: Record<string, string> = {
   normal: "#919AA2",
   fire: "red.500",
   water: "blue.500",
@@ -79,132 +87,184 @@ interface PokemonCardProps {
   types: string[];
   url: string;
   id: number;
+  weight: number;
+  height: number;
+  moves: string;
+  weaknesses: string;
 }
 
 export const PokemonCard: FC<PokemonCardProps> = ({
   name,
   types,
-  url,
   id,
   image,
+  weight,
+  height,
+  moves,
+  weaknesses,
 }) => {
-  const formattedId = `N°${id.toString().padStart(3, "0")}`;
+  const capitalizeEachWord = (str: string): string => {
+    return str
+      .toLowerCase()
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  };
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
+  const formattedId = `N°${id.toString().padStart(3, "0")}`;
   const [type1] = types[0];
-  const icon2 = typeIcons[type1];
   const backgroundColor = typeColors[type1] || "black";
   return (
-    <Card
-      border="1px"
-      borderColor="gray.200"
-      borderRadius="md"
-      boxShadow="md"
-      maxW="360px"
-    >
-      <CardHeader fontSize="sm" textAlign="center">
-        <Text
-          as="h2"
-          fontWeight="semibold"
-          textTransform="capitalize"
-          color="gray.600"
+    <>
+      <Card
+        border="1px"
+        borderColor="gray.200"
+        borderRadius="md"
+        boxShadow="md"
+        maxW="360px"
+      >
+        <CardHeader fontSize="sm" textAlign="center">
+          <Text
+            as="h2"
+            fontWeight="semibold"
+            textTransform="capitalize"
+            color="gray.600"
+          >
+            {formattedId}
+          </Text>
+          <Text
+            as="h1"
+            fontSize="xl"
+            fontWeight="semibold"
+            textTransform="capitalize"
+            color="gray.700"
+          >
+            {capitalizeEachWord(name)}
+          </Text>
+        </CardHeader>
+
+        <CardBody
+          as="button"
+          position="relative"
+          cursor="default"
+          onClick={onOpen}
         >
-          {formattedId}
-        </Text>
-        <Text
-          as="h1"
-          fontSize="xl"
-          fontWeight="semibold"
-          textTransform="capitalize"
-          color="gray.700"
-        >
-          {name}
-        </Text>
-      </CardHeader>
+          <Box
+            position="absolute"
+            top="50%"
+            left="50%"
+            width="60%"
+            height="60%"
+            zIndex={0}
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            pointerEvents="none"
+            opacity="0.2"
+            transform="translate(-50%, -50%)"
+            borderRadius="50%"
+            p={50}
+            bg={backgroundColor}
+          />
+          <Image
+            position="relative"
+            src={image}
+            alt={name}
+            boxSize="100px"
+            objectFit="cover"
+            mx="auto"
+            _hover={{ transform: "scale(1.1)" }}
+            transition="transform 0.2s"
+            zIndex={2}
+            cursor="pointer"
+          />
+        </CardBody>
 
-      <CardBody position="relative" as="a" href={name} cursor="default">
-        <Image
-          src={image}
-          alt={name}
-          boxSize="100px"
-          objectFit="cover"
-          mx="auto"
-          _hover={{ transform: "scale(1.1)" }}
-          transition="transform 0.2s"
-          cursor="pointer"
-        />
-        <Box
-          position="absolute"
-          top="50%"
-          left="50%"
-          width="60%"
-          height="60%"
-          zIndex={1}
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          pointerEvents="none"
-          opacity="0.1"
-          transform="translate(-50%, -50%)"
-          borderRadius="50%"
-          bg={backgroundColor}
-          p={50}
-        />
-      </CardBody>
+        <Flex mt={3} justify="center" wrap="wrap">
+          {types[0].map((type, index) => {
+            const normalizedType = type;
+            const icon = typeIcons[normalizedType];
+            const color = typeColors[normalizedType] || "gray.500";
 
-      <Flex mt={3} justify="center" wrap="wrap">
-        {types[0].map((type, index) => {
-          const normalizedType = type;
-          const icon = typeIcons[normalizedType];
-          const color = typeColors[normalizedType] || "gray.500";
-
-          return (
-            <Box
-              key={index}
-              mx={2}
-              bgColor={color}
-              p={2}
-              flex="1"
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-              maxW="150px"
-              gap="2"
-              borderRadius="90px"
-            >
+            return (
               <Box
-                bgColor="white"
-                border="white"
-                borderRadius="50%"
-                p="3px"
-                color={color}
+                key={index}
+                mx={2}
+                bgColor={color}
+                p={2}
+                flex="1"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                maxW="150px"
+                gap="2"
+                borderRadius="90px"
               >
-                {icon}
+                <Box
+                  bgColor="white"
+                  border="white"
+                  borderRadius="50%"
+                  p="3px"
+                  color={color}
+                >
+                  {icon}
+                </Box>
+                <Box color="white">{capitalizeEachWord(type)}</Box>
               </Box>
-              <Box color="white">{type}</Box>
-            </Box>
-          );
-        })}
-      </Flex>
+            );
+          })}
+        </Flex>
 
-      <CardFooter>
-        <Link
-          href={name}
-          color="white"
-          textAlign="center"
-          w="100%"
-          bgColor="gray.500"
-          mx={4}
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          borderRadius="50px"
-          p="2"
-          fontWeight="semibold"
-          textDecoration="none"
-        >
-          Ver Detalhes
-        </Link>
-      </CardFooter>
-    </Card>
+        <CardFooter>
+          <Button onClick={onOpen} w="100%" colorScheme="teal">
+            Show Details
+          </Button>
+        </CardFooter>
+      </Card>
+      <Modal isOpen={isOpen} onClose={onClose} isCentered>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>{capitalizeEachWord(name)} Details</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Image src={image} alt={name} boxSize="150px" mx="auto" mb={4} />
+
+            <Text fontSize="lg" fontWeight="bold" textTransform="capitalize">
+              {capitalizeEachWord(name)} ({formattedId})
+            </Text>
+
+            <Text mt={4}>
+              <Text as="strong">Type:</Text>{" "}
+              {capitalizeEachWord(types.join(", "))}
+            </Text>
+
+            <Text mt={4}>
+              <Text as="strong">Weight:</Text> {weight / 10} kg{" "}
+            </Text>
+
+            <Text mt={4}>
+              <Text as="strong">Height:</Text> {height / 10} m{" "}
+            </Text>
+
+            <Text mt={4}>
+              <Text as="strong">Moves:</Text>{" "}
+              {capitalizeEachWord(moves.slice(0, 5).join(", "))}
+            </Text>
+
+            <Text mt={4}>
+              <Text as="strong">Weaknesses:</Text>{" "}
+              {capitalizeEachWord(weaknesses.join(", "))}
+            </Text>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={onClose}>
+              Close
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    </>
   );
 };

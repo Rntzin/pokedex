@@ -5,6 +5,7 @@ import { Flex, SimpleGrid, Text } from "@chakra-ui/react";
 import { GetServerSideProps } from "next";
 import { PokemonCard } from "./pokemon-card";
 import { getPokemonList } from "@/lib/pokemonAPI";
+import { FilterPokemon } from "./filter";
 interface PokemonGridProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   pokemonList: any;
@@ -32,7 +33,7 @@ export function PokemonKanto({ pokemonList }: PokemonGridProps) {
           fontFamily="mono"
           color="gray.500"
         >
-          Coleção de Pokemon
+          <FilterPokemon />
         </Text>
         <Flex
           as="div"
@@ -51,6 +52,10 @@ export function PokemonKanto({ pokemonList }: PokemonGridProps) {
                   url={pokemon.url}
                   image={pokemon.image}
                   types={[pokemon.types]}
+                  height={pokemon.height}
+                  weight={pokemon.weight}
+                  weaknesses={pokemon.weaknesses}
+                  moves={pokemon.moves}
                 />
               );
             })}
