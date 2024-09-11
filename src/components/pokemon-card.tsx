@@ -84,13 +84,13 @@ export const typeColors: Record<string, string> = {
 interface PokemonCardProps {
   name: string;
   image: string;
-  types: string[];
+  types: string[][];
   url: string;
   id: number;
   weight: number;
   height: number;
-  moves: string;
-  weaknesses: string;
+  moves: string[];
+  weaknesses: string[];
 }
 
 export const PokemonCard: FC<PokemonCardProps> = ({
@@ -103,11 +103,11 @@ export const PokemonCard: FC<PokemonCardProps> = ({
   moves,
   weaknesses,
 }) => {
-  const capitalizeEachWord = (str: string): string => {
-    return str
+  const capitalizeEachWord = (up: string): string => {
+    return up
       .toLowerCase()
       .split(" ")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .map((e) => e.charAt(0).toUpperCase() + e.slice(1))
       .join(" ");
   };
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -178,6 +178,8 @@ export const PokemonCard: FC<PokemonCardProps> = ({
             transition="transform 0.2s"
             zIndex={2}
             cursor="pointer"
+            w="80%"
+            h="80%"
           />
         </CardBody>
 

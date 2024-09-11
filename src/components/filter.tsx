@@ -30,7 +30,7 @@ export function FilterPokemon() {
           <Input
             type="text"
             color="gray.900"
-            placeholder="Procurar Pokemon..."
+            placeholder="Search Pokemon..."
             borderColor="gray.400"
             borderRadius="40px"
             sx={{
