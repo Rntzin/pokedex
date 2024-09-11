@@ -1,41 +1,56 @@
-export async function getPokemonList(limit: number = 50) {
-  const res = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=${limit}`);
-  const data = await res.json();
+import axios from "axios";
 
-  const pokemonDetails = await Promise.all(
-    data.results.map(async (pokemon: { url: string }) => {
-      const detailRes = await fetch(pokemon.url);
-      const detailData = await detailRes.json();
-      const types = detailData.types.map(
-        (type: { type: { name: string; url: string } }) => type.type.name
-      );
-      const weaknesses = await Promise.all(
-        detailData.types.map(async (type: { type: { url: string } }) => {
-          const typeRes = await fetch(type.type.url);
-          const typeData = await typeRes.json();
-          return typeData.damage_relations.double_damage_from.map(
-            (weakness: { name: string }) => weakness.name
-          );
-        })
-      );
-      return {
-        id: detailData.id,
-        name: detailData.name,
-        image: detailData.sprites.front_default,
-        url: pokemon.url,
-        types: types,
-        weight: detailData.weight,
-        height: detailData.height,
-        moves: detailData.moves.map(
-          (move: { move: { name: string } }) => move.move.name
-        ),
-        weaknesses: weaknesses.flat(),
-      };
-    })
+export interface PokemonDetail {
+  id: number;
+  name: string;
+  image: string;
+  url: string;
+  types: string[][];
+  weight: number;
+  height: number;
+  moves: string[];
+  weaknesses: string[];
+}
+
+export const getPokemonList = async (
+  limit: number = 10,
+  offset: number = 0
+): Promise<{ results: PokemonDetail[] }> => {
+  const { data } = await axios.get(
+    `https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`
   );
 
-  return {
-    ...data,
-    results: pokemonDetails,
-  };
-}
+  const pokemonDetails: PokemonDetail[] = [];
+  for (const pokemon of data.results) {
+    const { data: detailData } = await axios.get(pokemon.url);
+
+    const types = detailData.types.map(
+      (type: { type: { name: string } }) => type.type.name
+    );
+    const weaknesses: string[] = [];
+
+    for (const type of detailData.types) {
+      const { data: typeData } = await axios.get(type.type.url);
+      const typeWeaknesses = typeData.damage_relations.double_damage_from.map(
+        (weakness: { name: string }) => weakness.name
+      );
+      weaknesses.push(...typeWeaknesses);
+    }
+
+    pokemonDetails.push({
+      id: detailData.id,
+      name: detailData.name,
+      image: detailData.sprites.front_default,
+      url: pokemon.url,
+      types,
+      weight: detailData.weight,
+      height: detailData.height,
+      moves: detailData.moves.map(
+        (move: { move: { name: string } }) => move.move.name
+      ),
+      weaknesses,
+    });
+  }
+
+  return { results: pokemonDetails };
+};

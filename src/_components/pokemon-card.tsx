@@ -1,3 +1,4 @@
+"use client";
 import { FC } from "react";
 import {
   Text,
@@ -94,14 +95,14 @@ interface PokemonCardProps {
 }
 
 export const PokemonCard: FC<PokemonCardProps> = ({
-  name,
-  types,
   id,
+  name,
   image,
-  weight,
+  types,
   height,
-  moves,
+  weight,
   weaknesses,
+  moves,
 }) => {
   const capitalizeEachWord = (up: string): string => {
     return up
@@ -261,7 +262,7 @@ export const PokemonCard: FC<PokemonCardProps> = ({
           </ModalBody>
 
           <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={onClose}>
+            <Button colorScheme="teal" mr={3} onClick={onClose}>
               Close
             </Button>
           </ModalFooter>

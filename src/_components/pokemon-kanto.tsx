@@ -4,14 +4,50 @@
 import { Flex, SimpleGrid, Text } from "@chakra-ui/react";
 import { GetServerSideProps } from "next";
 import { PokemonCard } from "./pokemon-card";
-import { getPokemonList } from "@/lib/pokemonAPI";
+import { getPokemonList, PokemonDetail } from "@/lib/pokemonAPI";
 import { FilterPokemon } from "./filter";
-interface PokemonGridProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  pokemonList: any;
+import { useState, useEffect } from "react";
+
+interface PokemonKantoProps {
+  pokemonDetails: PokemonDetail[];
 }
 
-export function PokemonKanto({ pokemonList }: PokemonGridProps) {
+export function PokemonKanto({ pokemonDetails }: PokemonKantoProps) {
+  const [pokemons, setPokemons] = useState<PokemonDetail[]>(pokemonDetails);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [offset, setOffset] = useState<number>(0);
+
+  useEffect(() => {
+    const loadMorePokemons = async () => {
+      if (loading) return;
+
+      setLoading(true);
+      const limit = 10;
+      const { results } = await getPokemonList(limit, offset);
+      setPokemons((prev) => [...prev, ...results]);
+      setLoading(false);
+    };
+
+    const handleScroll = () => {
+      if (
+        window.innerHeight + document.documentElement.scrollTop !==
+          document.documentElement.offsetHeight ||
+        loading
+      ) {
+        return;
+      }
+      setOffset((prev) => prev + 10); // Incrementa o offset para carregar mais dados
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    // Carrega mais Pokémon quando o componente é montado
+    loadMorePokemons();
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [loading, offset]);
   return (
     <>
       <Flex
@@ -43,7 +79,7 @@ export function PokemonKanto({ pokemonList }: PokemonGridProps) {
           flexDirection="column"
         >
           <SimpleGrid columns={[1, 2, 3]} spacing={6}>
-            {pokemonList.results.map((pokemon: any) => {
+            {pokemonDetails.map((pokemon: any) => {
               return (
                 <PokemonCard
                   id={pokemon.id}
@@ -67,8 +103,8 @@ export function PokemonKanto({ pokemonList }: PokemonGridProps) {
 }
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const pokemons = await getPokemonList();
+  const pokemonDetails = await getPokemonList();
   return {
-    props: { pokemons },
+    props: { pokemonDetails },
   };
 };

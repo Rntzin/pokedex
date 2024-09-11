@@ -9,10 +9,10 @@ Este é um site que funciona como uma pokédex, ele da início na região de Kan
 - Imagem
 - Nome
 - Tipo
-- Altura
-- Peso
 - Movimentos
 - Fraquezas
+- Altura
+- Peso
 
 Para a obter as informações de nome e tipo do Pokémon foi utilizada a API do "PokéAPI", já para a imagem de cada um foi utilizada a API do "https://pokeapi.co/".
 
