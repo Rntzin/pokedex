@@ -151,6 +151,7 @@ export const PokemonCard: FC<PokemonCardProps> = ({
             position="relative"
             src={image}
             alt={name}
+            aspectRatio="3/2"
             objectFit="contain"
             mx="auto"
             _hover={{ transform: "scale(1.1)" }}
@@ -158,7 +159,6 @@ export const PokemonCard: FC<PokemonCardProps> = ({
             zIndex={2}
             cursor="pointer"
             w="80%"
-            h="80%"
           />
         </CardBody>
 
@@ -208,8 +208,8 @@ export const PokemonCard: FC<PokemonCardProps> = ({
         <ModalContent>
           <ModalHeader>{capitalizeEachWord(name)} Details</ModalHeader>
           <ModalCloseButton />
-          <ModalBody>
-            <Image src={image} alt={name} boxSize="250px" mx="auto" mb={4} />
+          <ModalBody maxH="500px">
+            <Image src={image} alt={name} mx="auto" mb={4} aspectRatio="3/2" />
             <Box>
               <Text as="strong">Height: </Text>
               <Text as="span" fontSize="medium">

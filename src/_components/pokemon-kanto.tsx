@@ -1,44 +1,61 @@
 "use client";
 
-import { Flex, SimpleGrid, Spinner, Text } from "@chakra-ui/react";
+import { Flex, SimpleGrid, Text } from "@chakra-ui/react";
 import { GetServerSideProps } from "next";
 import { getPokemonList, Pokemon } from "@/lib/pokemonAPI";
 import { FilterPokemon } from "./filter";
 import { useEffect, useState } from "react";
 import { PokemonCard } from "./pokemon-card";
 
-interface PokemonKantoProps {
-  pokemonDetails: Pokemon[];
-}
+// interface PokemonKantoProps {
+//   pokemonDetails: Pokemon[];
+// }
 
-export function PokemonKanto({ pokemonDetails }: PokemonKantoProps) {
-  const [pokemons, setPokemons] = useState<Pokemon[]>(pokemonDetails);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+export function PokemonKanto() {
+  const [pokemons, setPokemons] = useState<Pokemon[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [loadedCount, setLoadedCount] = useState<number>(0);
+  const [hasMore, setHasMore] = useState<boolean>(true);
+
+  const loadMorePokemons = async () => {
+    if (loading || !hasMore) return;
+    setLoading(true);
+
+    try {
+      const newPokemons = await getPokemonList(loadedCount + 18); // Carrega mais 18 Pokémon
+      if (newPokemons.length === loadedCount) {
+        setHasMore(false); // Não há mais Pokémon para carregar
+      } else {
+        setPokemons(newPokemons);
+        setLoadedCount((prevCount) => prevCount + 18); // Atualiza o contador
+      }
+    } catch (error) {
+      console.error("Erro ao carregar os Pokémon:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchPokemons = async () => {
-      try {
-        setLoading(true);
-        const data = await getPokemonList(10);
-        setPokemons(data);
-      } catch (err) {
-        setError("Erro ao buscar a lista de Pokémons");
-      } finally {
-        setLoading(false);
+    // Carrega os Pokémon ao iniciar
+    loadMorePokemons();
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (
+        window.innerHeight + document.documentElement.scrollTop >=
+        document.documentElement.offsetHeight - 100
+      ) {
+        loadMorePokemons(); // Carrega mais Pokémon quando o usuário rola até o final
       }
     };
 
-    fetchPokemons();
-  }, []);
-
-  if (loading) {
-    return <Spinner color="blue.500" />;
-  }
-
-  if (error) {
-    return <Text color="red.500">{error}</Text>;
-  }
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [loadedCount, loading]);
 
   return (
     <>
