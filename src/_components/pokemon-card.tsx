@@ -96,6 +96,7 @@ interface PokemonCardProps {
   height: string;
   classification: string;
   resistant: string[];
+  weaknesses: string[];
 }
 
 export const PokemonCard: FC<PokemonCardProps> = ({
@@ -107,6 +108,7 @@ export const PokemonCard: FC<PokemonCardProps> = ({
   number,
   classification,
   resistant,
+  weaknesses,
 }) => {
   const capitalizeEachWord = (up: string): string => {
     return up
@@ -121,6 +123,7 @@ export const PokemonCard: FC<PokemonCardProps> = ({
 
   const flatTypes = types.flat();
   const flatResistant = resistant.flat();
+  const flatWeaknesses = weaknesses.flat();
   return (
     <>
       <Card
@@ -367,6 +370,69 @@ export const PokemonCard: FC<PokemonCardProps> = ({
                 </Flex>
               </Box>
             </Flex>
+            <Box
+              mt={3}
+              border="1px solid"
+              borderRadius="8px"
+              borderColor="gray.200"
+              bg="gray.100"
+            >
+              <Flex
+                as="h2"
+                fontSize="xl"
+                fontWeight="bold"
+                justifyContent="center"
+                alignItems="center"
+                borderRadius="8px"
+                my="3"
+                color="teal"
+              >
+                Weaknesses
+              </Flex>
+              <Flex
+                alignContent="center"
+                justifyContent="center"
+                flexWrap="wrap"
+                my={3}
+              >
+                {flatWeaknesses.map((weaknesses, index) => {
+                  const normalizedWeaknesses = weaknesses.toLowerCase();
+                  const color = typeColors[normalizedWeaknesses] || "gray.500";
+                  const icon = typeIcons[normalizedWeaknesses] || <FaStar />;
+
+                  return (
+                    <Flex
+                      key={index}
+                      mx={2}
+                      my={2}
+                      bgColor={color}
+                      p={2}
+                      alignContent="center"
+                      justifyContent="center"
+                      gap="2"
+                      maxW="200px"
+                      w="150px"
+                      borderRadius="8px"
+                      fontSize="medium"
+                      fontWeight="bold"
+                    >
+                      <Flex
+                        bgColor="white"
+                        border="white"
+                        borderRadius="50%"
+                        p="3px"
+                        color={color}
+                      >
+                        {icon}
+                      </Flex>
+                      <Flex color="white">
+                        {capitalizeEachWord(weaknesses)}
+                      </Flex>
+                    </Flex>
+                  );
+                })}
+              </Flex>
+            </Box>
             <Box
               mt={3}
               border="1px solid"

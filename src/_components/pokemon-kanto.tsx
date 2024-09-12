@@ -100,6 +100,7 @@ export function PokemonKanto() {
                   weight={pokemon.weight.maximum}
                   classification={pokemon.classification}
                   resistant={pokemon.resistant}
+                  weaknesses={pokemon.weaknesses}
                 />
               );
             })}
