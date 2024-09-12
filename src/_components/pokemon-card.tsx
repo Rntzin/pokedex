@@ -86,23 +86,19 @@ interface PokemonCardProps {
   name: string;
   image: string;
   types: string[][];
-  url: string;
-  id: number;
-  weight: number;
-  height: number;
-  moves: string[];
-  weaknesses: string[];
+  id: string;
+  number: string;
+  weight: string;
+  height: string;
 }
 
 export const PokemonCard: FC<PokemonCardProps> = ({
-  id,
   name,
   image,
   types,
-  height,
   weight,
-  weaknesses,
-  moves,
+  height,
+  number,
 }) => {
   const capitalizeEachWord = (up: string): string => {
     return up
@@ -113,9 +109,9 @@ export const PokemonCard: FC<PokemonCardProps> = ({
   };
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const formattedId = `N°${id.toString().padStart(3, "0")}`;
-  const [type1] = types[0];
-  const backgroundColor = typeColors[type1] || "black";
+  const formattedId = `N°${number.toString().padStart(3, "0")}`;
+
+  const flatTypes = types.flat();
   return (
     <>
       <Card
@@ -151,29 +147,11 @@ export const PokemonCard: FC<PokemonCardProps> = ({
           cursor="default"
           onClick={onOpen}
         >
-          <Box
-            position="absolute"
-            top="50%"
-            left="50%"
-            width="60%"
-            height="60%"
-            zIndex={0}
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-            pointerEvents="none"
-            opacity="0.2"
-            transform="translate(-50%, -50%)"
-            borderRadius="50%"
-            p={50}
-            bg={backgroundColor}
-          />
           <Image
             position="relative"
             src={image}
             alt={name}
-            boxSize="100px"
-            objectFit="cover"
+            objectFit="contain"
             mx="auto"
             _hover={{ transform: "scale(1.1)" }}
             transition="transform 0.2s"
@@ -185,10 +163,10 @@ export const PokemonCard: FC<PokemonCardProps> = ({
         </CardBody>
 
         <Flex mt={3} justify="center" wrap="wrap">
-          {types[0].map((type, index) => {
-            const normalizedType = type;
-            const icon = typeIcons[normalizedType];
+          {flatTypes.map((type, index) => {
+            const normalizedType = type.toLowerCase();
             const color = typeColors[normalizedType] || "gray.500";
+            const icon = typeIcons[normalizedType] || <FaStar />;
 
             return (
               <Box
@@ -231,34 +209,25 @@ export const PokemonCard: FC<PokemonCardProps> = ({
           <ModalHeader>{capitalizeEachWord(name)} Details</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <Image src={image} alt={name} boxSize="150px" mx="auto" mb={4} />
-
-            <Text fontSize="lg" fontWeight="bold" textTransform="capitalize">
-              {capitalizeEachWord(name)} ({formattedId})
-            </Text>
-
-            <Text mt={4}>
-              <Text as="strong">Type:</Text>{" "}
-              {capitalizeEachWord(types.join(", "))}
-            </Text>
-
-            <Text mt={4}>
-              <Text as="strong">Weight:</Text> {weight / 10} kg{" "}
-            </Text>
-
-            <Text mt={4}>
-              <Text as="strong">Height:</Text> {height / 10} m{" "}
-            </Text>
-
-            <Text mt={4}>
-              <Text as="strong">Moves:</Text>{" "}
-              {capitalizeEachWord(moves.slice(0, 5).join(", "))}
-            </Text>
-
-            <Text mt={4}>
-              <Text as="strong">Weaknesses:</Text>{" "}
-              {capitalizeEachWord(weaknesses.join(", "))}
-            </Text>
+            <Image src={image} alt={name} boxSize="250px" mx="auto" mb={4} />
+            <Box>
+              <Text as="strong">Height: </Text>
+              <Text as="span" fontSize="medium">
+                {height}
+              </Text>
+            </Box>
+            <Box>
+              <Text as="strong">Weight: </Text>
+              <Text as="span" fontSize="medium">
+                {weight}
+              </Text>
+            </Box>
+            <Box>
+              <Text as="strong">Types: </Text>
+              <Text as="span" fontSize="medium">
+                {types.join(", ")}
+              </Text>
+            </Box>
           </ModalBody>
 
           <ModalFooter>

@@ -1,20 +1,45 @@
 "use client";
 
-import { Flex, SimpleGrid, Text } from "@chakra-ui/react";
+import { Flex, SimpleGrid, Spinner, Text } from "@chakra-ui/react";
 import { GetServerSideProps } from "next";
 import { getPokemonList, Pokemon } from "@/lib/pokemonAPI";
 import { FilterPokemon } from "./filter";
 import { useEffect, useState } from "react";
+import { PokemonCard } from "./pokemon-card";
 
 interface PokemonKantoProps {
   pokemonDetails: Pokemon[];
 }
 
 export function PokemonKanto({ pokemonDetails }: PokemonKantoProps) {
-  const [data, setData] = useState<Pokemon[]>(pokemonDetails);
+  const [pokemons, setPokemons] = useState<Pokemon[]>(pokemonDetails);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
   useEffect(() => {
-    setData(pokemonDetails || []);
-  }, [pokemonDetails]);
+    const fetchPokemons = async () => {
+      try {
+        setLoading(true);
+        const data = await getPokemonList(10);
+        setPokemons(data);
+      } catch (err) {
+        setError("Erro ao buscar a lista de Pokémons");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPokemons();
+  }, []);
+
+  if (loading) {
+    return <Spinner color="blue.500" />;
+  }
+
+  if (error) {
+    return <Text color="red.500">{error}</Text>;
+  }
+
   return (
     <>
       <Flex
@@ -46,21 +71,18 @@ export function PokemonKanto({ pokemonDetails }: PokemonKantoProps) {
           flexDirection="column"
         >
           <SimpleGrid columns={[1, 2, 3]} spacing={6}>
-            {data.map((pokemon) => {
+            {pokemons.map((pokemon) => {
               return (
-                <h1 key={pokemon.id}>{pokemon.name}</h1>
-                // <PokemonCard
-                //   id={pokemon.id}
-                //   key={pokemon.name}
-                //   name={pokemon.name}
-                //   url={pokemon.url}
-                //   image={pokemon.image}
-                //   types={[pokemon.types]}
-                //   height={pokemon.height}
-                //   weight={pokemon.weight}
-                //   weaknesses={pokemon.weaknesses}
-                //   moves={pokemon.moves}
-                // />
+                <PokemonCard
+                  id={pokemon.id}
+                  key={pokemon.name}
+                  number={pokemon.number}
+                  name={pokemon.name}
+                  image={pokemon.image}
+                  types={[pokemon.types]}
+                  height={pokemon.height.maximum}
+                  weight={pokemon.weight.maximum}
+                />
               );
             })}
           </SimpleGrid>

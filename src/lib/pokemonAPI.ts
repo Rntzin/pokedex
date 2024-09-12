@@ -45,28 +45,28 @@ export interface EvolutionRequirement {
 }
 
 export const getPokemonList = async (
-  limit: number = 10,
-  offset: number = 0
+  offset: number = 0,
+  limit: number = 18
 ): Promise<Pokemon[]> => {
   const query = `
- {
-  pokemons(first: 10) {
-    id            
-    number        
-    name          
-    weight {
-      minimum     
-      maximum     
-    }
-    height {
-      minimum     
-      maximum     
-    }
-    classification 
-    types         
-    resistant     
-    weaknesses    
-    fleeRate      
+  {
+    pokemons(first: ${limit}) {
+      id            
+      number        
+      name          
+      weight {
+        minimum     
+        maximum     
+        }
+        height {
+          minimum     
+          maximum     
+          }
+          classification 
+          types         
+          resistant     
+          weaknesses    
+          fleeRate      
     maxCP         
     maxHP         
     attacks {
@@ -74,27 +74,26 @@ export const getPokemonList = async (
         name
         type
         damage
-      }
-      special {   
-        name
-        type
-        damage
-      }
-    }
-    evolutions {  
-      id
-      name
-    }
-    evolutionRequirements { 
-      amount
-      name
-    }
-    image         
-  }
-}
-;
-`;
+        }
+        special {   
+          name
+          type
+          damage
+          }
+          }
+          evolutions {  
+            id
+            name
+            }
+            evolutionRequirements { 
+              amount
+              name
+              }
+              image         
+              }
+              }`;
   try {
+    console.log(limit);
     const response = await axios({
       url: "https://graphql-pokemon2.vercel.app/",
       method: "POST",
