@@ -40,6 +40,10 @@ import {
   FaStar,
 } from "react-icons/fa";
 
+import { TbPokeball } from "react-icons/tb";
+import { RiWeightLine } from "react-icons/ri";
+import { AiOutlineColumnHeight } from "react-icons/ai";
+
 export const typeIcons: Record<string, JSX.Element> = {
   normal: <FaStar />,
   fire: <FaFire />,
@@ -90,6 +94,8 @@ interface PokemonCardProps {
   number: string;
   weight: string;
   height: string;
+  classification: string;
+  resistant: string[];
 }
 
 export const PokemonCard: FC<PokemonCardProps> = ({
@@ -99,6 +105,8 @@ export const PokemonCard: FC<PokemonCardProps> = ({
   weight,
   height,
   number,
+  classification,
+  resistant,
 }) => {
   const capitalizeEachWord = (up: string): string => {
     return up
@@ -112,6 +120,7 @@ export const PokemonCard: FC<PokemonCardProps> = ({
   const formattedId = `N°${number.toString().padStart(3, "0")}`;
 
   const flatTypes = types.flat();
+  const flatResistant = resistant.flat();
   return (
     <>
       <Card
@@ -120,6 +129,7 @@ export const PokemonCard: FC<PokemonCardProps> = ({
         borderRadius="md"
         boxShadow="md"
         maxW="360px"
+        w="300px"
       >
         <CardHeader fontSize="sm" textAlign="center">
           <Text
@@ -127,7 +137,12 @@ export const PokemonCard: FC<PokemonCardProps> = ({
             fontWeight="semibold"
             textTransform="capitalize"
             color="gray.600"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            gap="5px"
           >
+            <TbPokeball color="gray.600" />
             {formattedId}
           </Text>
           <Text
@@ -174,13 +189,15 @@ export const PokemonCard: FC<PokemonCardProps> = ({
                 mx={2}
                 bgColor={color}
                 p={2}
-                flex="1"
                 display="flex"
                 alignItems="center"
                 justifyContent="center"
-                maxW="150px"
                 gap="2"
+                maxW="200px"
+                w="100px"
                 borderRadius="90px"
+                fontSize="medium"
+                fontWeight="bold"
               >
                 <Box
                   bgColor="white"
@@ -197,8 +214,8 @@ export const PokemonCard: FC<PokemonCardProps> = ({
           })}
         </Flex>
 
-        <CardFooter>
-          <Button onClick={onOpen} w="100%" colorScheme="teal">
+        <CardFooter alignItems="center" justifyContent="center">
+          <Button onClick={onOpen} w="68%" colorScheme="teal">
             Show Details
           </Button>
         </CardFooter>
@@ -206,27 +223,210 @@ export const PokemonCard: FC<PokemonCardProps> = ({
       <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>{capitalizeEachWord(name)} Details</ModalHeader>
+          <ModalHeader gap="2">
+            <Box>
+              <Flex alignItems="center" justify="center" flexDirection="column">
+                {capitalizeEachWord(name)}
+                <Box
+                  as="h2"
+                  fontSize="sm"
+                  textTransform="capitalize"
+                  color="gray.600"
+                >
+                  {formattedId}
+                </Box>
+                <Flex mt={3} justify="center" wrap="wrap">
+                  {flatTypes.map((type, index) => {
+                    const normalizedType = type.toLowerCase();
+                    const color = typeColors[normalizedType] || "gray.500";
+                    const icon = typeIcons[normalizedType] || <FaStar />;
+
+                    return (
+                      <Box
+                        key={index}
+                        mx={2}
+                        p={1}
+                        bgColor={color}
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                        gap="2"
+                        maxW="200px"
+                        w="100px"
+                        borderRadius="8px"
+                        fontSize="medium"
+                        fontWeight="bold"
+                      >
+                        <Box
+                          bgColor="white"
+                          border="white"
+                          borderRadius="50%"
+                          p="3px"
+                          color={color}
+                        >
+                          {icon}
+                        </Box>
+                        <Box color="white">{capitalizeEachWord(type)}</Box>
+                      </Box>
+                    );
+                  })}
+                </Flex>
+              </Flex>
+            </Box>
+          </ModalHeader>
           <ModalCloseButton />
-          <ModalBody maxH="500px">
-            <Image src={image} alt={name} mx="auto" mb={4} aspectRatio="3/2" />
-            <Box>
-              <Text as="strong">Height: </Text>
-              <Text as="span" fontSize="medium">
-                {height}
-              </Text>
-            </Box>
-            <Box>
-              <Text as="strong">Weight: </Text>
-              <Text as="span" fontSize="medium">
-                {weight}
-              </Text>
-            </Box>
-            <Box>
-              <Text as="strong">Types: </Text>
-              <Text as="span" fontSize="medium">
-                {types.join(", ")}
-              </Text>
+          <ModalBody>
+            <Flex justifyContent="center" alignItems="center">
+              <Image src={image} alt={name} mb={4} objectFit="contain" />
+            </Flex>
+            <Flex gap={10} alignItems="center" justifyContent="center">
+              <Box>
+                <Flex
+                  alignItems="center"
+                  justifyContent="center"
+                  gap={1.5}
+                  color="gray.500"
+                  mt={3}
+                  mb={1.5}
+                >
+                  <RiWeightLine />
+                  <Text as="h2" fontSize="x-small">
+                    WEIGHT:
+                  </Text>
+                </Flex>
+                <Flex
+                  px="5"
+                  py="1"
+                  border="1px solid"
+                  borderRadius="8px"
+                  borderColor="gray.500"
+                  alignItems="center"
+                  justifyContent="center"
+                  fontSize="medium"
+                  color="gray.600"
+                >
+                  {weight}
+                </Flex>
+              </Box>
+              <Box>
+                <Flex
+                  alignItems="center"
+                  justifyContent="center"
+                  gap={1.5}
+                  color="gray.500"
+                  mt={3}
+                  mb={1.5}
+                >
+                  <AiOutlineColumnHeight />
+                  <Text as="h2" fontSize="x-small">
+                    HEIGHT:
+                  </Text>
+                </Flex>
+                <Flex
+                  px="5"
+                  py="1"
+                  border="1px solid"
+                  borderRadius="8px"
+                  borderColor="gray.500"
+                  alignItems="center"
+                  justifyContent="center"
+                  fontSize="medium"
+                  color="gray.600"
+                >
+                  {height}
+                </Flex>
+              </Box>
+            </Flex>
+            <Flex gap={10} alignItems="center" justifyContent="center">
+              <Box>
+                <Flex
+                  alignItems="center"
+                  justifyContent="center"
+                  gap={1.5}
+                  color="gray.500"
+                  mt={3}
+                  mb={1.5}
+                >
+                  <TbPokeball />
+                  <Text as="h2" fontSize="x-small">
+                    CATEGORY:
+                  </Text>
+                </Flex>
+                <Flex
+                  px="5"
+                  py="1"
+                  border="1px solid"
+                  borderRadius="8px"
+                  borderColor="gray.500"
+                  alignItems="center"
+                  justifyContent="center"
+                  fontSize="medium"
+                  color="gray.600"
+                >
+                  {classification}
+                </Flex>
+              </Box>
+            </Flex>
+            <Box
+              mt={3}
+              border="1px solid"
+              borderRadius="8px"
+              borderColor="gray.200"
+              bg="gray.100"
+            >
+              <Flex
+                as="h2"
+                fontSize="xl"
+                fontWeight="bold"
+                justifyContent="center"
+                alignItems="center"
+                borderRadius="8px"
+                my="3"
+                color="teal"
+              >
+                Registrant
+              </Flex>
+              <Flex
+                alignContent="center"
+                justifyContent="center"
+                flexWrap="wrap"
+                my={3}
+              >
+                {flatResistant.map((resistant, index) => {
+                  const normalizedResistant = resistant.toLowerCase();
+                  const color = typeColors[normalizedResistant] || "gray.500";
+                  const icon = typeIcons[normalizedResistant] || <FaStar />;
+
+                  return (
+                    <Flex
+                      key={index}
+                      mx={2}
+                      my={2}
+                      bgColor={color}
+                      p={2}
+                      alignContent="center"
+                      justifyContent="center"
+                      gap="2"
+                      maxW="200px"
+                      w="150px"
+                      borderRadius="8px"
+                      fontSize="medium"
+                      fontWeight="bold"
+                    >
+                      <Flex
+                        bgColor="white"
+                        border="white"
+                        borderRadius="50%"
+                        p="3px"
+                        color={color}
+                      >
+                        {icon}
+                      </Flex>
+                      <Flex color="white">{capitalizeEachWord(resistant)}</Flex>
+                    </Flex>
+                  );
+                })}
+              </Flex>
             </Box>
           </ModalBody>
 

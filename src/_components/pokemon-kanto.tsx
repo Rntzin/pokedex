@@ -22,12 +22,12 @@ export function PokemonKanto() {
     setLoading(true);
 
     try {
-      const newPokemons = await getPokemonList(loadedCount + 18); // Carrega mais 18 Pokémon
+      const newPokemons = await getPokemonList(loadedCount + 9);
       if (newPokemons.length === loadedCount) {
-        setHasMore(false); // Não há mais Pokémon para carregar
+        setHasMore(false);
       } else {
         setPokemons(newPokemons);
-        setLoadedCount((prevCount) => prevCount + 18); // Atualiza o contador
+        setLoadedCount((prevCount) => prevCount + 9);
       }
     } catch (error) {
       console.error("Erro ao carregar os Pokémon:", error);
@@ -37,7 +37,6 @@ export function PokemonKanto() {
   };
 
   useEffect(() => {
-    // Carrega os Pokémon ao iniciar
     loadMorePokemons();
   }, []);
 
@@ -47,7 +46,7 @@ export function PokemonKanto() {
         window.innerHeight + document.documentElement.scrollTop >=
         document.documentElement.offsetHeight - 100
       ) {
-        loadMorePokemons(); // Carrega mais Pokémon quando o usuário rola até o final
+        loadMorePokemons();
       }
     };
 
@@ -99,6 +98,8 @@ export function PokemonKanto() {
                   types={[pokemon.types]}
                   height={pokemon.height.maximum}
                   weight={pokemon.weight.maximum}
+                  classification={pokemon.classification}
+                  resistant={pokemon.resistant}
                 />
               );
             })}

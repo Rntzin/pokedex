@@ -1,6 +1,7 @@
 "use client";
 
-import { Flex, Text } from "@chakra-ui/react";
+import { Flex } from "@chakra-ui/react";
+import { SiPokemon } from "react-icons/si";
 
 export async function HeaderPokemon() {
   return (
@@ -13,9 +14,7 @@ export async function HeaderPokemon() {
         justify="space-between"
         bg="teal"
       >
-        <Text as="a" fontSize="4xl" color="gray.100" href="/">
-          Pokedex
-        </Text>
+        <SiPokemon color="white" size="150px" />
       </Flex>
     </>
   );

@@ -44,9 +44,7 @@ export interface EvolutionRequirement {
   name: string;
 }
 
-export const getPokemonList = async (
-  limit: number = 18
-): Promise<Pokemon[]> => {
+export const getPokemonList = async (limit: number = 9): Promise<Pokemon[]> => {
   const query = `
    {
     pokemons(first: ${limit}) {
