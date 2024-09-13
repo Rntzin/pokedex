@@ -21,7 +21,7 @@ import {
   PokemonTypes,
   typeColors,
 } from "@/_commons/utils";
-import { FaStar } from "react-icons/fa";
+import { FaFire } from "react-icons/fa";
 
 interface PokemonCardProps {
   name: string;
@@ -116,7 +116,7 @@ export const PokemonCard = ({
           {flatTypes.map((type, index) => {
             const normalizedType = type.toLowerCase();
             const color = typeColors[normalizedType] || "gray.500";
-            const icon = getIconByType(type as PokemonTypes) || FaStar;
+            const icon = getIconByType(type as PokemonTypes) || FaFire;
 
             return (
               <Box
@@ -130,7 +130,7 @@ export const PokemonCard = ({
                 gap="2"
                 maxW="200px"
                 w="100px"
-                borderRadius="90px"
+                borderRadius="9px"
                 fontSize="medium"
                 fontWeight="bold"
               >
@@ -141,7 +141,7 @@ export const PokemonCard = ({
                   p="3px"
                   color={color}
                 >
-                  <Icon as={icon} />
+                  <Icon w="20px" as={icon} />
                 </Box>
                 <Box color="white">{capitalizeEachWord(type)}</Box>
               </Box>
