@@ -1,15 +1,10 @@
 "use client";
 
 import { Flex, SimpleGrid, Text } from "@chakra-ui/react";
-import { GetServerSideProps } from "next";
 import { getPokemonList, Pokemon } from "@/lib/pokemonAPI";
 import { FilterPokemon } from "./filter";
 import { useEffect, useState } from "react";
 import { PokemonCard } from "./pokemon-card";
-
-// interface PokemonKantoProps {
-//   pokemonDetails: Pokemon[];
-// }
 
 export function PokemonKanto() {
   const [pokemons, setPokemons] = useState<Pokemon[]>([]);
@@ -110,16 +105,3 @@ export function PokemonKanto() {
     </>
   );
 }
-
-export const getServerSideProps: GetServerSideProps = async () => {
-  try {
-    const pokemonDetails = await getPokemonList();
-    return {
-      props: { pokemonDetails },
-    };
-  } catch (error) {
-    return {
-      props: { pokemonDetails: [] },
-    };
-  }
-};
