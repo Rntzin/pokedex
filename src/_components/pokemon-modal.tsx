@@ -1,10 +1,5 @@
 "use client";
-import {
-  capitalizeEachWord,
-  getIconByType,
-  PokemonTypes,
-  typeColors,
-} from "@/_commons/utils";
+import { capitalizeEachWord } from "@/_commons/utils";
 import {
   Image,
   Flex,
@@ -17,10 +12,8 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Icon,
 } from "@chakra-ui/react";
 import { AiOutlineColumnHeight } from "react-icons/ai";
-import { FaStar } from "react-icons/fa";
 import { RiWeightLine } from "react-icons/ri";
 import { TbPokeball } from "react-icons/tb";
 import { PokemonTags } from "./pokemon-tags";
@@ -45,7 +38,6 @@ export const PokemonModal = ({
   onClose,
   name,
   id,
-  types,
   weight,
   height,
   image,
@@ -69,42 +61,6 @@ export const PokemonModal = ({
               >
                 {id}
               </Box>
-              <Flex mt={3} justify="center" wrap="wrap">
-                {types.map((type, index) => {
-                  const normalizedType = type.toLowerCase();
-                  const color = typeColors[normalizedType] || "gray.500";
-                  const icon = getIconByType(type as PokemonTypes) || FaStar;
-
-                  return (
-                    <Box
-                      key={index}
-                      mx={2}
-                      p={1}
-                      bgColor={color}
-                      display="flex"
-                      alignItems="center"
-                      justifyContent="center"
-                      gap="2"
-                      maxW="200px"
-                      w="100px"
-                      borderRadius="8px"
-                      fontSize="medium"
-                      fontWeight="bold"
-                    >
-                      <Box
-                        bgColor="white"
-                        border="white"
-                        borderRadius="50%"
-                        p="3px"
-                        color={color}
-                      >
-                        <Icon as={icon} />
-                      </Box>
-                      <Box color="white">{capitalizeEachWord(type)}</Box>
-                    </Box>
-                  );
-                })}
-              </Flex>
             </Flex>
           </Box>
         </ModalHeader>

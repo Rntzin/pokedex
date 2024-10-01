@@ -2,7 +2,7 @@
 
 import { Flex, SimpleGrid, Text } from "@chakra-ui/react";
 import { getPokemonList, Pokemon } from "@/lib/pokemonAPI";
-import { FilterPokemon } from "./filter";
+// import { FilterPokemon } from "./filter";
 import { useEffect, useState } from "react";
 import { PokemonCard } from "./pokemon-card";
 
@@ -72,7 +72,7 @@ export function PokemonKanto() {
           fontFamily="mono"
           color="gray.500"
         >
-          <FilterPokemon />
+          {/* <FilterPokemon /> */}
         </Text>
         <Flex
           as="div"

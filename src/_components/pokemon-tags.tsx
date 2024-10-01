@@ -7,7 +7,7 @@ import {
   typeColors,
 } from "@/_commons/utils";
 import { Flex, Box, Icon } from "@chakra-ui/react";
-import { FaStar } from "react-icons/fa";
+import { FaApple } from "react-icons/fa6";
 
 export interface PokemonTagsProps {
   title: string;
@@ -44,7 +44,7 @@ export const PokemonTags = ({ title, tags }: PokemonTagsProps) => {
         {tags.map((tag, index) => {
           const normalize = tag.toLowerCase();
           const color = typeColors[normalize] || "gray.500";
-          const icon = getIconByType(normalize as PokemonTypes) || FaStar;
+          const icon = getIconByType(normalize as PokemonTypes) || FaApple;
 
           return (
             <Flex

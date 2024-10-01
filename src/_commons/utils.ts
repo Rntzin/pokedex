@@ -69,7 +69,7 @@ export type PokemonTypes =
   | "fairy";
 
 export const getIconByType = (type: PokemonTypes) => {
-  return typeIcons[type];
+  return typeIcons[type.toLowerCase()] || FaStar;
 };
 
 export const typeIcons = {
